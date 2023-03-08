@@ -262,6 +262,24 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    
+    // gist.github.com/KentaYamada/2eed4af1f6b2adac5cc7c9063acf8720
+    // w3schools.com/xml/xml_http.asp
+    // w3schools.com/js/js_json_http.asp
+
+    // 
+    var req = new XMLHttpRequest();
+    var url = "http://127.0.0.1:5000/world"
+    req.onreadyStatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+
+            var remoteWorld = JSON.parse(this.responseText);
+            console.log(remoteWorld)
+        }
+    }
+    xhttp.open("GET", url, true);
+    xhttp.send();
+
     drawFrame();
 }
 
