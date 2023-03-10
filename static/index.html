@@ -1,6 +1,11 @@
 <!DOCTYPE HTML>
 <html> 
   <head> 
+    <!-- <style>
+        body {
+            background-image: url("Hindle.png");
+        }
+    </style> -->
     <title>AJAX Assignment</title> 
     <meta charset="utf-8" /> 
     <meta content='width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
@@ -24,6 +29,9 @@
   </head> 
   <body bgcolor="black" height="100%" width="100%"> 
     <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
+    <div style="display:none;">
+        <img id="hindle" src="Hindle.png" width="300" height="227" />
+    </div>"
     <script>
 var canvas = document.getElementById('c');
 var host = window.location.host;
@@ -32,10 +40,17 @@ var W = canvas.width  = window.innerWidth-6;
 var H = canvas.height = window.innerHeight-50;
 
 
+// stackoverflow.com/questions/31907295/how-would-i-fillrect-with-an-image
+var img = document.getElementById("hindle");
+
+
 function getJSONXMLHTTPRequest(url, callback) {
     var xhr = new XMLHttpRequest();
-    
+
     // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send
+    // gist.github.com/KentaYamada/2eed4af1f6b2adac5cc7c9063acf8720
+    // w3schools.com/xml/xml_http.asp
+    // w3schools.com/js/js_json_http.asp
     xhr.open("GET", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Accept", "application/json");
@@ -122,8 +137,9 @@ function prepEntity(entity) {
 function clearFrame() {
     with(context) {
 	moveTo(0,0);
-	fillStyle = "#000";
-	fillRect(0,0,W,H);
+	// fillStyle = "#000";
+	// fillRect(0,0,W,H);
+    context.drawImage(img, 0, 0, W, H);
     }
 
 }
@@ -303,12 +319,7 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
-    
-    // gist.github.com/KentaYamada/2eed4af1f6b2adac5cc7c9063acf8720
-    // w3schools.com/xml/xml_http.asp
-    // w3schools.com/js/js_json_http.asp
 
-    // 
     getJSONXMLHTTPRequest("/world", function(result) { 
         world = result; 
         drawNextFrame();
