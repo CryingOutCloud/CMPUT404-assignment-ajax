@@ -32,6 +32,36 @@ var W = canvas.width  = window.innerWidth-6;
 var H = canvas.height = window.innerHeight-50;
 
 
+function getJSONXMLHTTPRequest(url, callback) {
+    var xhr = new XMLHttpRequest();
+    
+    // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Accept", "application/json");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState==4) {
+            try {
+                if (xhr.status==200) {
+                    //XXX: parse some JSON from the request!
+                    let result = JSON.parse(xhr.responseText);
+
+                    //XXX: Pass the data to the callback!
+                    // geeksforgeeks.org/javascript-passing-parameters-to-a-callback-function/
+                    callback(result);
+                }
+            } 
+            catch(e) {
+                alert('Error: ' + e.name);
+            }
+        }
+    };
+
+    xhr.send();
+}
+
+
 function sendJSONXMLHTTPRequest(url, objects, callback) {
     var xhr = new XMLHttpRequest();
 
@@ -148,7 +178,7 @@ function addEntity(entity, data) {
     drawNextFrame(); // (but should we?)
 
     //XXX: Send a XHTML Request that updates the entity you just  modified!
-    sendJSONXMLHTTPRequest("/entity/" + entity, data)
+    sendJSONXMLHTTPRequest("/entity/" + entity, data, (object => {}));
 
 }
 
@@ -279,23 +309,10 @@ function update() {
     // w3schools.com/js/js_json_http.asp
 
     // 
-    var req = new XMLHttpRequest();
-    var url = "http://127.0.0.1:5000/world"
-    req.onreadyStatechange = function() {
-        try {
-            if (this.readyState == 4 && this.status == 200) {
-
-                world = JSON.parse(this.responseText);
-                console.log("world: ", world);
-                drawNextFrame();
-            }
-        }
-        catch (e) {
-            console.log("update() error: ", e);
-        }
-    }
-    req.open("GET", url, true);
-    req.send();
+    getJSONXMLHTTPRequest("/world", function(result) { 
+        world = result; 
+        drawNextFrame();
+    })
 
     drawFrame();
 }
