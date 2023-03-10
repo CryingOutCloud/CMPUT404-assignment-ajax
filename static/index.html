@@ -271,14 +271,19 @@ function update() {
     var req = new XMLHttpRequest();
     var url = "http://127.0.0.1:5000/world"
     req.onreadyStatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
+        try {
+            if (this.readyState == 4 && this.status == 200) {
 
-            var remoteWorld = JSON.parse(this.responseText);
-            console.log(remoteWorld)
+                var remoteWorld = JSON.parse(this.responseText);
+                console.log(remoteWorld)
+            }
+        }
+        catch (e) {
+            console.log("update() error: ", e);
         }
     }
-    xhttp.open("GET", url, true);
-    xhttp.send();
+    req.open("GET", url, true);
+    req.send();
 
     drawFrame();
 }
