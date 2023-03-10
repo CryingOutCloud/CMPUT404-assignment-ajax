@@ -34,12 +34,22 @@ var H = canvas.height = window.innerHeight-50;
 
 function sendJSONXMLHTTPRequest(url, objects, callback) {
     var xhr = new XMLHttpRequest();
+
+    // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Accept", "application/json");
+
     xhr.onreadystatechange = function () {
         if (xhr.readyState==4) {
             try {
                 if (xhr.status==200) {
                     //XXX: parse some JSON from the request!
+                    let result = JSON.parse(this.responseText);
+
                     //XXX: Pass the data to the callback!
+                    // geeksforgeeks.org/javascript-passing-parameters-to-a-callback-function/
+                    callback(result);
                 }
             } 
             catch(e) {
@@ -47,9 +57,8 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
             }
         }
     };
-    //XXX: POST to a URL
-    //XXX: set the mimetype and the accept headers!
-    // Remember to use application/json !
+
+    xhr.send(JSON.stringify(objects));
 }
 
 
@@ -274,8 +283,9 @@ function update() {
         try {
             if (this.readyState == 4 && this.status == 200) {
 
-                var remoteWorld = JSON.parse(this.responseText);
-                console.log(remoteWorld)
+                world = JSON.parse(this.responseText);
+                console.log("world: ", world);
+                drawNextFrame();
             }
         }
         catch (e) {
